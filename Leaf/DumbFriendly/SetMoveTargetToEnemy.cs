@@ -6,8 +6,7 @@ public class SetMoveTargetToEnemy : Leaf
 {
     public override NodeStatus OnBehave(BehaviourState state)
     {
-        Context context = (Context)state;
-
+        var context = (FriendlyNpcContext)state;
         if (context.enemy == null)
             return NodeStatus.FAILURE;
 

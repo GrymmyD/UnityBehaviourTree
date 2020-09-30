@@ -1,10 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Context : BehaviourState
+public class FriendlyNpcContext : BehaviourState, IMoveContext,Itest
 {
-    public Bot me;
-    public Seeker seeker;
-    public Living enemy = null;
-    public Vector3? moveTarget = null;
+    public GameObject enemy { get; set; }
+    public DumbFriendly me { get; set; }
+    public ResourceNode ResourceNode { get; set; }
+    public Vector3? MoveTarget { get; set; }
+}
+
+public interface IMoveContext
+{
+    Vector3? MoveTarget { get; }
+}
+public interface Itest
+{
+    Vector3? MoveTarget { get; }
 }

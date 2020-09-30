@@ -2,17 +2,12 @@
 using System.Collections;
 using System;
 
-public class HasEnemy : Leaf
+public class StopMoving : Leaf
 {
     public override NodeStatus OnBehave(BehaviourState state)
     {
-        Context context = (Context)state;
-
-        if(context.enemy == null)
-        {
-            return NodeStatus.FAILURE;
-        }
-
+        var context = (FriendlyNpcContext)state;
+        context.me.agent.isStopped = true;
         return NodeStatus.SUCCESS;
     }
 

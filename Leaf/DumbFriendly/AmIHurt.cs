@@ -12,9 +12,10 @@ public class AmIHurt : Leaf
     }
     public override NodeStatus OnBehave(BehaviourState state)
     {
-        Context context = (Context)state;
+        FriendlyNpcContext context = (FriendlyNpcContext)state;
+        var me = context.me;
 
-        if (context.me.livingInfo.GetHealth() < healthThreshold)
+        if (me.HP/me.MaxHP < healthThreshold)
             return NodeStatus.SUCCESS;
         else
             return NodeStatus.FAILURE;

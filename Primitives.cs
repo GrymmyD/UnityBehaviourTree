@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Threading;
 
 public enum NodeStatus
 {
@@ -15,6 +16,12 @@ public abstract class BehaviourState
 }
 
 public abstract class Node {
+    public Node()
+    {
+#if DEBUG
+        debug = true;
+#endif
+    }
     public bool starting = true;
     protected bool debug = false;
     public int ticks = 0;
@@ -75,7 +82,7 @@ public abstract class Composite : Node
 
     public override NodeStatus Behave(BehaviourState state)
     {
-        bool shouldLog = debug && ticks == 0 ? true : false;
+        bool shouldLog = debug && ticks == 0;
         if(shouldLog)
             Debug.Log("Running behaviour list: " + compositeName);
 

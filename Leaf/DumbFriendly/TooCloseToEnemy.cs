@@ -12,9 +12,9 @@ public class TooCloseToEnemy : Leaf
     }
     public override NodeStatus OnBehave(BehaviourState state)
     {
-        Context context = (Context)state;
+        var context = (FriendlyNpcContext)state;
 
-        if(context.enemy != null && context.me.DistanceTo(context.enemy.transform.position) < distanceThreshold)
+        if(context.enemy != null && Vector3.Distance(context.me.transform.position, context.enemy.transform.position) < distanceThreshold)
         {
             return NodeStatus.SUCCESS;
         }

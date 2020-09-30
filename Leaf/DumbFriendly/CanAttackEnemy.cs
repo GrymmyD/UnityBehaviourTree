@@ -2,19 +2,16 @@
 using System.Collections;
 using System;
 
-public class AttackEnemy : Leaf
+public class CanAttackEnemy : Leaf
 {
     public override NodeStatus OnBehave(BehaviourState state)
     {
-        Context context = (Context)state;
-
+        var context = (FriendlyNpcContext)state;
         if (context.enemy == null)
             return NodeStatus.FAILURE;
 
-        context.me.LookAt(context.enemy.transform.position);
-        context.me.attackComponent.Swing();
-
-        // TODO - perhaps should test success of the actual attack and return failure if we missed
+        if (!context.me.CanSee(context.enemy.gameObject))
+            return NodeStatus.FAILURE;
 
         return NodeStatus.SUCCESS;
     }
