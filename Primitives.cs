@@ -15,12 +15,15 @@ public abstract class BehaviourState
 {
 }
 
-public abstract class Node {
+public class NpcContext : BehaviourState 
+{
+    public NPC Me { get; set; }
+}
+
+public abstract class Node<T> where T : BehaviourState {
     public Node()
     {
-#if DEBUG
-        debug = true;
-#endif
+        debug = false;
     }
     public bool starting = true;
     protected bool debug = false;
@@ -28,7 +31,7 @@ public abstract class Node {
     public static List<string> debugTypeBlacklist = new List<string>() { "Selector", "Sequence", "Repeater", "Inverter", "Succeeder"  };
     public virtual NodeStatus Behave(BehaviourState state)
     {
-        NodeStatus ret = OnBehave(state);
+        NodeStatus ret = OnBehave((T)state);
 
         if (debug && !debugTypeBlacklist.Contains(GetType().Name))
         {
@@ -58,7 +61,7 @@ public abstract class Node {
         return ret;
     }
 
-    public abstract NodeStatus OnBehave(BehaviourState state);
+    public abstract NodeStatus OnBehave(T state);
     public void Reset()
     {
         starting = true;
@@ -69,12 +72,12 @@ public abstract class Node {
     public abstract void OnReset();
 }
 
-public abstract class Composite : Node
+public abstract class Composite<T> : Node<T> where T : BehaviourState
 {
-    protected List<Node> children = new List<Node>();
+    protected List<Node<T>> children = new List<Node<T>>();
     public string compositeName;
 
-    public Composite(string name, params Node[] nodes)
+    public Composite(string name, params Node<T>[] nodes)
     {
         compositeName = name;
         children.AddRange(nodes);
@@ -95,15 +98,15 @@ public abstract class Composite : Node
     }
 }
 
-public abstract class Leaf : Node
+public abstract class Leaf<T> : Node<T> where T: BehaviourState
 {
 }
 
-public abstract class Decorator : Node
+public abstract class Decorator<T> : Node<T> where T : BehaviourState
 {
-    protected Node child;
+    protected Node<T> child;
 
-    public Decorator(Node node) {
+    public Decorator(Node<T> node) {
         child = node;
     }
 }

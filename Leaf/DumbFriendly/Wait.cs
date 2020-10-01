@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wait : Leaf
+public class Wait<T> : Leaf<T> where T: BehaviourState
 {
     public float WaitTimeInSeconds { get; private set; }
     private float tracker;
@@ -12,7 +12,7 @@ public class Wait : Leaf
         tracker = WaitTimeInSeconds;
     }
 
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
         tracker -= Time.deltaTime;
         if (tracker > 0)

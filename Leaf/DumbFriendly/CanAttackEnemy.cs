@@ -2,15 +2,14 @@
 using System.Collections;
 using System;
 
-public class CanAttackEnemy : Leaf
+public class CanAttackEnemy<T> : Leaf<T> where T: NpcContext, IHasEnemyContext
 {
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
-        var context = (FriendlyNpcContext)state;
-        if (context.enemy == null)
+        if (state.Enemy == null)
             return NodeStatus.FAILURE;
 
-        if (!context.me.CanSee(context.enemy.gameObject))
+        if (!state.Me.CanSee(state.Enemy.gameObject))
             return NodeStatus.FAILURE;
 
         return NodeStatus.SUCCESS;

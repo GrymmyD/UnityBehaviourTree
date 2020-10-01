@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SetMoveTargetToResource : Leaf
+public class SetMoveTargetToResource <T>: Leaf<T> where T :NpcContext,IHasResourceTarget,IMoveContext
 {
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
-        var context = (FriendlyNpcContext)state;
-        if (context.ResourceNode == null)
+        if (state.ResourceNode == null)
             return NodeStatus.FAILURE;
 
-        context.moveTarget = context.ResourceNode.transform.position;
+        state.MoveTarget = state.ResourceNode.transform.position;
         return NodeStatus.SUCCESS;
     }
 

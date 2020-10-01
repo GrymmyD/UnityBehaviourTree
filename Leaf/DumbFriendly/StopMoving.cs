@@ -2,12 +2,11 @@
 using System.Collections;
 using System;
 
-public class StopMoving : Leaf
+public class StopMoving <T>: Leaf<T> where T : NpcContext
 {
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
-        var context = (FriendlyNpcContext)state;
-        context.me.agent.isStopped = true;
+        state.Me.NavMeshAgent.isStopped = true;
         return NodeStatus.SUCCESS;
     }
 

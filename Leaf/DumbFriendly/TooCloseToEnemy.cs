@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-public class TooCloseToEnemy : Leaf
+public class TooCloseToEnemy <T>: Leaf<T> where T : NpcContext, IHasEnemyContext
 {
     public float distanceThreshold;
 
@@ -10,11 +10,9 @@ public class TooCloseToEnemy : Leaf
     {
         distanceThreshold = threshold;
     }
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
-        var context = (FriendlyNpcContext)state;
-
-        if(context.enemy != null && Vector3.Distance(context.me.transform.position, context.enemy.transform.position) < distanceThreshold)
+        if(state.Enemy != null && Vector3.Distance(state.Me.transform.position, state.Enemy.transform.position) < distanceThreshold)
         {
             return NodeStatus.SUCCESS;
         }

@@ -2,16 +2,16 @@
 using System.Collections;
 using System;
 
-public class SetRandomDestination : Leaf {
+public class SetRandomDestination <T>: Leaf <T> where T : NpcContext, IMoveContext
+{
     public float wanderRange { get; set; }
     public SetRandomDestination(float wanderRange)
     {
         this.wanderRange = wanderRange;
     }
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
-        var context = (FriendlyNpcContext)state;
-        context.moveTarget = context.me.transform.position + new Vector3(UnityEngine.Random.Range(-wanderRange, wanderRange), 0, UnityEngine.Random.Range(-wanderRange, wanderRange));
+        state.MoveTarget = state.Me.transform.position + new Vector3(UnityEngine.Random.Range(-wanderRange, wanderRange), 0, UnityEngine.Random.Range(-wanderRange, wanderRange));
         return NodeStatus.SUCCESS;
     }
 

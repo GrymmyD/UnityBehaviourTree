@@ -1,19 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FriendlyNpcContext : BehaviourState, IMoveContext,Itest
+public class FriendlyNpcContext : NpcContext, IMoveContext, IHasEnemyContext, IHasResourceTarget
 {
-    public GameObject enemy { get; set; }
-    public DumbFriendly me { get; set; }
+    public GameObject Enemy { get; set; }
     public ResourceNode ResourceNode { get; set; }
     public Vector3? MoveTarget { get; set; }
 }
 
 public interface IMoveContext
 {
-    Vector3? MoveTarget { get; }
+    Vector3? MoveTarget { get; set; }
 }
-public interface Itest
+
+public interface IHasEnemyContext
 {
-    Vector3? MoveTarget { get; }
+    GameObject Enemy { get; set; }
+}
+
+public interface IHasResourceTarget
+{
+    ResourceNode ResourceNode { get; set; }
 }

@@ -2,18 +2,17 @@
 using System.Collections;
 using System;
 
-public class AmIHurt : Leaf
+public class AmIHurt : Leaf<NpcContext>
 {
-    public int healthThreshold = 100;
+    public float healthThreshold = 100;
 
-    public AmIHurt(int threshold)
+    public AmIHurt(float threshold)
     {
         healthThreshold = threshold;
     }
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(NpcContext state)
     {
-        FriendlyNpcContext context = (FriendlyNpcContext)state;
-        var me = context.me;
+        var me = state.Me;
 
         if (me.HP/me.MaxHP < healthThreshold)
             return NodeStatus.SUCCESS;

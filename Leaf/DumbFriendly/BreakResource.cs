@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BreakResource :Leaf 
+public class BreakResource<T> :Leaf<T> where T: NpcContext, IHasResourceTarget
 {
     public float BreakRadius { get; set; }
 
@@ -11,22 +11,21 @@ public class BreakResource :Leaf
         BreakRadius = breakRadius;
     }
 
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
-        var context = (FriendlyNpcContext)state;
-        if (starting && context.ResourceNode == null)
+        if (starting && state.ResourceNode == null)
             return NodeStatus.FAILURE;
-        else if (context.ResourceNode == null)
+        else if (state.ResourceNode == null)
         {
-            context.ResourceNode = null;
+            state.ResourceNode = null;
             return NodeStatus.SUCCESS;
         }
 
-        if (Vector3.Distance(context.me.transform.position, context.ResourceNode.transform.position) > BreakRadius)
+        if (Vector3.Distance(state.Me.transform.position, state.ResourceNode.transform.position) > BreakRadius)
             return NodeStatus.FAILURE;
 
-        context.me.currentTarget = context.ResourceNode.gameObject;
-        context.me.Animator.SetTrigger("Shoot");
+        ((IHasTarget)state.Me).currentTarget= state.ResourceNode.gameObject;
+        state.Me.Animator.SetTrigger("Shoot");
         return NodeStatus.SUCCESS;
     }
 

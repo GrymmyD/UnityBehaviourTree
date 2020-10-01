@@ -2,16 +2,16 @@
 using System.Collections;
 using System;
 
-public class Selector : Composite
+public class Selector<T> : Composite<T> where T: BehaviourState
 {
     int currentChild = 0;
 
-    public Selector(string compositeName, params Node[] nodes) : base(compositeName, nodes)
+    public Selector(string compositeName, params Node<T>[] nodes) : base(compositeName, nodes)
     {
 
     }
 
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
         if(currentChild >= children.Count)
         {
@@ -37,7 +37,7 @@ public class Selector : Composite
     public override void OnReset()
     {
         currentChild = 0;
-        foreach (Node child in children)
+        foreach (Node<T> child in children)
         {
             child.Reset();
         }

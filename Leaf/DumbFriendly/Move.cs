@@ -2,36 +2,35 @@
 using System.Collections;
 using System;
 
-public class Move : Leaf
+public class Move<T> : Leaf<T> where T: NpcContext, IMoveContext
 {
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
-        var context = (IMoveContext)state;
-        if (!context.MoveTarget.HasValue)
+        if (!state.MoveTarget.HasValue)
             return NodeStatus.FAILURE;
 
         if(starting)
         {
-            context.me.agent.destination = context.moveTarget.Value;
-            if (AtDestination(context))
+            state.Me.NavMeshAgent.destination = state.MoveTarget.Value;
+            if (AtDestination(state))
                 return NodeStatus.SUCCESS;
         }
 
-        if(context.me.agent.path != null)
+        if(state.Me.NavMeshAgent.path != null)
         {
-            if (AtDestination(context))
+            if (AtDestination(state))
                 return NodeStatus.SUCCESS;
         }
 
         return NodeStatus.RUNNING;
     }
 
-    bool AtDestination(FriendlyNpcContext context)
+    bool AtDestination(NpcContext context)
     {
         // If we're already really close, don't bother pathing
-        if (context.me.agent.remainingDistance < 2.0f)
+        if (context.Me.NavMeshAgent.remainingDistance < 2.0f)
         {
-            context.me.LookAt(context.moveTarget.Value);
+            context.Me.LookAt(((IMoveContext)context).MoveTarget.Value);
             return true;
         }
         return false;

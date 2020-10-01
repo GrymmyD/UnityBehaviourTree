@@ -2,15 +2,14 @@
 using System.Collections;
 using System;
 
-public class SetMoveTargetToEnemy : Leaf
+public class SetMoveTargetToEnemy <T>: Leaf<T> where T : BehaviourState, IHasEnemyContext, IMoveContext
 {
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
-        var context = (FriendlyNpcContext)state;
-        if (context.enemy == null)
+        if (state.Enemy == null)
             return NodeStatus.FAILURE;
 
-        context.moveTarget = context.enemy.transform.position;
+        state.MoveTarget = state.Enemy.transform.position;
         return NodeStatus.SUCCESS;
     }
 

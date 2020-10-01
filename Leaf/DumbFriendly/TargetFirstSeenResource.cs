@@ -5,20 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine.Analytics;
 
-class TargetFirstSeenResource : Leaf
+class TargetFirstSeenResource <T>: Leaf<T> where T :NpcContext,IHasResourceTarget
 {
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
-        var context = (FriendlyNpcContext)state;
-
-        foreach (var item in context.me.seenTargets)
+        foreach (var item in ((IHasTargetList)state.Me).seenTargets)
         {
             if (item == null)
                 continue;
             var holder = item.GetComponent<ResourceNode>();
             if (holder != null)
             {
-                context.ResourceNode = holder;
+                state.ResourceNode = holder;
                 return NodeStatus.SUCCESS;
             }
         }

@@ -2,13 +2,13 @@
 using System.Collections;
 using System;
 
-public class Succeeder : Decorator
+public class Succeeder <T>: Decorator<T> where T : BehaviourState
 {
-    public Succeeder(Node child) : base(child)
+    public Succeeder(Node<T> child) : base(child)
     {
 
     }
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
         NodeStatus ret = child.Behave(state);
 

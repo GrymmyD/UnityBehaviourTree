@@ -2,13 +2,13 @@
 using System.Collections;
 using System;
 
-public class Inverter : Decorator
+public class Inverter<T> : Decorator<T> where T : BehaviourState
 {
-    public Inverter(Node child) : base(child)
+    public Inverter(Node<T> child) : base(child)
     {
 
     }
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
         switch(child.Behave(state))
         {

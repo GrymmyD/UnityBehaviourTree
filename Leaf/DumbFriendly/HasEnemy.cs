@@ -2,13 +2,11 @@
 using System.Collections;
 using System;
 
-public class HasEnemy : Leaf
+public class HasEnemy <T>: Leaf<T> where T: BehaviourState,IHasEnemyContext
 {
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
-        var context = (FriendlyNpcContext)state;
-
-        if(context.enemy == null)
+        if(state.Enemy == null)
         {
             return NodeStatus.FAILURE;
         }

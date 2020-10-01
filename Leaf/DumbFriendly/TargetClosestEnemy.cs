@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class TargetClosestEnemy : Leaf
+public class TargetClosestEnemy<T> : Leaf<T> where T: NpcContext, IHasEnemyContext
 {
     float distanceThreshold;
     public TargetClosestEnemy(float threshold)
@@ -12,32 +12,30 @@ public class TargetClosestEnemy : Leaf
         distanceThreshold = threshold;
     }
 
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
-        var context = (FriendlyNpcContext)state;
-        
         var holder = new HashSet<MonoBehaviour>();
-        foreach (var item in context.me.seenTargets)
+        foreach (var item in ((IHasTargetList)state.Me).seenTargets)
         {
             holder.Add(item.GetComponent<RangedEnemyAi>());
         }
         var sortedTargets = holder.ToArray();
         Array.Sort(sortedTargets, delegate (MonoBehaviour item1, MonoBehaviour item2) {
-            return Vector3.Distance(context.me.transform.position, item1.transform.position).CompareTo(Vector3.Distance(context.me.transform.position, item2.transform.position));
+            return Vector3.Distance(state.Me.transform.position, item1.transform.position).CompareTo(Vector3.Distance(state.Me.transform.position, item2.transform.position));
         });
 
         foreach(var target in sortedTargets)
         {
-            if(Vector3.Distance(context.me.transform.position, target.transform.position) > distanceThreshold) 
+            if(Vector3.Distance(state.Me.transform.position, target.transform.position) > distanceThreshold) 
             {
-                context.enemy = null;
+                state.Enemy = null;
                 return NodeStatus.FAILURE;
             } 
 
-            context.enemy = target.gameObject;
+            state.Enemy = target.gameObject;
             return NodeStatus.SUCCESS;
         }
-        context.enemy = null;
+        state.Enemy = null;
         return NodeStatus.FAILURE;
     }
 

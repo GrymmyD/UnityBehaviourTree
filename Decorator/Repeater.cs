@@ -2,13 +2,13 @@
 using System.Collections;
 using System;
 
-public class Repeater : Decorator
+public class Repeater<T> : Decorator<T> where T: BehaviourState
 {
-    public Repeater(Node child) : base(child)
+    public Repeater(Node<T> child) : base(child)
     {
 
     }
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
         NodeStatus ret = child.Behave(state);
         if (ret != NodeStatus.RUNNING)
@@ -24,14 +24,14 @@ public class Repeater : Decorator
     }
 }
 
-public class RepeatUntilFail : Decorator
+public class RepeatUntilFail<T> : Decorator<T> where T: BehaviourState
 {
-    public RepeatUntilFail(Node child) : base(child)
+    public RepeatUntilFail(Node<T> child) : base(child)
     {
 
     }
 
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
         NodeStatus ret = child.Behave(state);
         switch (ret)

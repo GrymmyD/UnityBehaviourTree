@@ -2,16 +2,16 @@
 using System.Collections;
 using System;
 
-public class Sequence : Composite
+public class Sequence<T> : Composite<T> where T : BehaviourState
 {
     int currentChild = 0;
 
-    public Sequence(string compositeName, params Node[] nodes) : base(compositeName, nodes)
+    public Sequence(string compositeName, params Node<T>[] nodes) : base(compositeName, nodes)
     {
 
     }
 
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
         NodeStatus ret = children[currentChild].Behave(state);
 
@@ -40,7 +40,7 @@ public class Sequence : Composite
     public override void OnReset()
     {
         currentChild = 0;
-        foreach(Node child in children)
+        foreach(Node<T> child in children)
         {
             child.Reset();
         }
