@@ -1,16 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using SSG.BehaviourTrees.Primitives;
 
-public class CanAttackEnemy<T> : Leaf<T> where T: NpcContext, IHasEnemyContext
+public class HasEnemy <T>: Leaf<T> where T: BehaviourState,IHasEnemyContext
 {
     public override NodeStatus OnBehave(T state)
     {
-        if (state.Enemy == null)
+        if(state.Enemy == null)
+        {
             return NodeStatus.FAILURE;
-
-        if (!state.Me.CanSee(state.Enemy.gameObject))
-            return NodeStatus.FAILURE;
+        }
 
         return NodeStatus.SUCCESS;
     }

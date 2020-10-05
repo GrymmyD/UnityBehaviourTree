@@ -1,53 +1,34 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using SSG.BehaviourTrees.Primitives;
 
-public class Repeater<T> : Decorator<T> where T: BehaviourState
+namespace SSG.BehaviourTrees.Decorators
 {
-    public Repeater(Node<T> child) : base(child)
-    {
 
-    }
-    public override NodeStatus OnBehave(T state)
+    /// <summary>
+    /// Resets child notes after execution unless child returns Running
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class Repeater<T> : Decorator<T> where T : BehaviourState
     {
-        NodeStatus ret = child.Behave(state);
-        if (ret != NodeStatus.RUNNING)
+        public Repeater(Node<T> child) : base(child)
         {
-            Reset();
-            child.Reset();
+
         }
-        return NodeStatus.SUCCESS;
-    }
-
-    public override void OnReset()
-    {
-    }
-}
-
-public class RepeatUntilFail<T> : Decorator<T> where T: BehaviourState
-{
-    public RepeatUntilFail(Node<T> child) : base(child)
-    {
-
-    }
-
-    public override NodeStatus OnBehave(T state)
-    {
-        NodeStatus ret = child.Behave(state);
-        switch (ret)
+        public override NodeStatus OnBehave(T state)
         {
-            case NodeStatus.FAILURE:
-                return NodeStatus.SUCCESS;
-            case NodeStatus.RUNNING:
-            case NodeStatus.SUCCESS:
+            NodeStatus ret = child.Behave(state);
+            if (ret != NodeStatus.RUNNING)
+            {
                 Reset();
                 child.Reset();
-                return NodeStatus.RUNNING;
+            }
+            return NodeStatus.SUCCESS;
         }
-        return NodeStatus.FAILURE;
-    }
 
-    public override void OnReset()
-    {
+        public override void OnReset()
+        {
+        }
     }
 }

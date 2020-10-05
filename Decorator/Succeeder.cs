@@ -1,24 +1,32 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using SSG.BehaviourTrees.Primitives;
 
-public class Succeeder <T>: Decorator<T> where T : BehaviourState
+namespace SSG.BehaviourTrees.Decorators
 {
-    public Succeeder(Node<T> child) : base(child)
+    /// <summary>
+    /// Always returns Success or Running
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class Succeeder<T> : Decorator<T> where T : BehaviourState
     {
+        public Succeeder(Node<T> child) : base(child)
+        {
 
-    }
-    public override NodeStatus OnBehave(T state)
-    {
-        NodeStatus ret = child.Behave(state);
+        }
+        public override NodeStatus OnBehave(T state)
+        {
+            NodeStatus ret = child.Behave(state);
 
-        if (ret == NodeStatus.RUNNING)
-            return NodeStatus.RUNNING;
+            if (ret == NodeStatus.RUNNING)
+                return NodeStatus.RUNNING;
 
-        return NodeStatus.SUCCESS;
-    }
+            return NodeStatus.SUCCESS;
+        }
 
-    public override void OnReset()
-    {
+        public override void OnReset()
+        {
+        }
     }
 }

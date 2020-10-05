@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SSG.BehaviourTrees.Primitives;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ public class TargetClosestResource<T> : Leaf<T> where T: NpcContext, IHasResourc
 
     public override NodeStatus OnBehave(T state)
     {
+        var meAsHasTarget = (IHasTarget)state.Me;
         var holder = new HashSet<ResourceNode>();
         foreach (var item in ((IHasTargetList) state.Me).seenTargets)
         {
@@ -31,14 +33,12 @@ public class TargetClosestResource<T> : Leaf<T> where T: NpcContext, IHasResourc
         {
             if (Vector3.Distance(state.Me.transform.position, target.transform.position) > Threshhold)
             {
-                state.ResourceNode = null;
                 return NodeStatus.FAILURE;
             }
 
-            state.ResourceNode = target.GetComponent<ResourceNode>();
+            meAsHasTarget.currentTarget = target.gameObject;
             return NodeStatus.SUCCESS;
         }
-        state.ResourceNode = null;
         return NodeStatus.FAILURE;
     }
 

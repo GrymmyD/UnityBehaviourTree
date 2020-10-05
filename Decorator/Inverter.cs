@@ -1,32 +1,37 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using SSG.BehaviourTrees.Primitives;
 
-public class Inverter<T> : Decorator<T> where T : BehaviourState
+namespace SSG.BehaviourTrees.Decorators
 {
-    public Inverter(Node<T> child) : base(child)
-    {
 
-    }
-    public override NodeStatus OnBehave(T state)
+    public class Inverter<T> : Decorator<T> where T : BehaviourState
     {
-        switch(child.Behave(state))
+        public Inverter(Node<T> child) : base(child)
         {
-            case NodeStatus.RUNNING:
-                return NodeStatus.RUNNING;
 
-            case NodeStatus.SUCCESS:
-                return NodeStatus.FAILURE;
+        }
+        public override NodeStatus OnBehave(T state)
+        {
+            switch (child.Behave(state))
+            {
+                case NodeStatus.RUNNING:
+                    return NodeStatus.RUNNING;
 
-            case NodeStatus.FAILURE:
-                return NodeStatus.SUCCESS;
+                case NodeStatus.SUCCESS:
+                    return NodeStatus.FAILURE;
+
+                case NodeStatus.FAILURE:
+                    return NodeStatus.SUCCESS;
+            }
+
+            Debug.Log("SHOULD NOT GET HERE");
+            return NodeStatus.FAILURE;
         }
 
-        Debug.Log("SHOULD NOT GET HERE");
-        return NodeStatus.FAILURE;
-    }
-
-    public override void OnReset()
-    {
+        public override void OnReset()
+        {
+        }
     }
 }

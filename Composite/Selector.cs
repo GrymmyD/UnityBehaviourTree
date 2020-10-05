@@ -1,45 +1,54 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using SSG.BehaviourTrees.Primitives;
 
-public class Selector<T> : Composite<T> where T: BehaviourState
+namespace SSG.BehaviourTrees.Composites
 {
-    int currentChild = 0;
 
-    public Selector(string compositeName, params Node<T>[] nodes) : base(compositeName, nodes)
+    /// <summary>
+    /// Executes children until a success is reached
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class Selector<T> : Composite<T> where T : BehaviourState
     {
+        int currentChild = 0;
 
-    }
-
-    public override NodeStatus OnBehave(T state)
-    {
-        if(currentChild >= children.Count)
+        public Selector(string compositeName, params Node<T>[] nodes) : base(compositeName, nodes)
         {
-            return NodeStatus.FAILURE;
+
         }
 
-        NodeStatus ret = children[currentChild].Behave(state);
-
-        switch(ret)
+        public override NodeStatus OnBehave(T state)
         {
-            case NodeStatus.SUCCESS:
-                return NodeStatus.SUCCESS;
+            if (currentChild >= children.Count)
+            {
+                return NodeStatus.FAILURE;
+            }
 
-            case NodeStatus.FAILURE:
-                currentChild++;
+            NodeStatus ret = children[currentChild].Behave(state);
 
-                // If we failed, immediately process the next child
-                return OnBehave(state);
+            switch (ret)
+            {
+                case NodeStatus.SUCCESS:
+                    return NodeStatus.SUCCESS;
+
+                case NodeStatus.FAILURE:
+                    currentChild++;
+
+                    // If we failed, immediately process the next child
+                    return OnBehave(state);
+            }
+            return NodeStatus.RUNNING;
         }
-        return NodeStatus.RUNNING;
-    }
 
-    public override void OnReset()
-    {
-        currentChild = 0;
-        foreach (Node<T> child in children)
+        public override void OnReset()
         {
-            child.Reset();
+            currentChild = 0;
+            foreach (Node<T> child in children)
+            {
+                child.Reset();
+            }
         }
     }
 }

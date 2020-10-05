@@ -1,48 +1,58 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using SSG.BehaviourTrees.Primitives;
 
-public class Sequence<T> : Composite<T> where T : BehaviourState
+namespace SSG.BehaviourTrees.Composites
 {
-    int currentChild = 0;
 
-    public Sequence(string compositeName, params Node<T>[] nodes) : base(compositeName, nodes)
+    /// <summary>
+    /// Executes children until a success is reached.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class Sequence<T> : Composite<T> where T : BehaviourState
     {
+        int currentChild = 0;
 
-    }
-
-    public override NodeStatus OnBehave(T state)
-    {
-        NodeStatus ret = children[currentChild].Behave(state);
-
-        switch(ret)
+        public Sequence(string compositeName, params Node<T>[] nodes) : base(compositeName, nodes)
         {
-            case NodeStatus.SUCCESS:
-                currentChild++;
-                break;
 
-            case NodeStatus.FAILURE:
-                return NodeStatus.FAILURE;
         }
 
-        if (currentChild >= children.Count)
+        public override NodeStatus OnBehave(T state)
         {
-            return NodeStatus.SUCCESS;
-        } else if(ret == NodeStatus.SUCCESS)
-        {
-            // if we succeeded, don't wait for the next tick to process the next child
-            return OnBehave(state);
+            NodeStatus ret = children[currentChild].Behave(state);
+
+            switch (ret)
+            {
+                case NodeStatus.SUCCESS:
+                    currentChild++;
+                    break;
+
+                case NodeStatus.FAILURE:
+                    return NodeStatus.FAILURE;
+            }
+
+            if (currentChild >= children.Count)
+            {
+                return NodeStatus.SUCCESS;
+            }
+            else if (ret == NodeStatus.SUCCESS)
+            {
+                // if we succeeded, don't wait for the next tick to process the next child
+                return OnBehave(state);
+            }
+
+            return NodeStatus.RUNNING;
         }
 
-        return NodeStatus.RUNNING;
-    }
-
-    public override void OnReset()
-    {
-        currentChild = 0;
-        foreach(Node<T> child in children)
+        public override void OnReset()
         {
-            child.Reset();
+            currentChild = 0;
+            foreach (Node<T> child in children)
+            {
+                child.Reset();
+            }
         }
     }
 }

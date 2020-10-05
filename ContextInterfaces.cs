@@ -1,12 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
-public class FriendlyNpcContext : NpcContext, IMoveContext, IHasEnemyContext, IHasResourceTarget
-{
-    public GameObject Enemy { get; set; }
-    public ResourceNode ResourceNode { get; set; }
-    public Vector3? MoveTarget { get; set; }
-}
+using System.Collections.Generic;
 
 public interface IMoveContext
 {
@@ -21,4 +15,15 @@ public interface IHasEnemyContext
 public interface IHasResourceTarget
 {
     ResourceNode ResourceNode { get; set; }
+}
+
+public interface IPatrolContext
+{
+    List<Vector3> PatrolPoints { get; set; }
+    int PatrolIndex { get; set; }
+}
+
+public interface ILook
+{
+    GameObject LookTarget { get; set; }
 }
