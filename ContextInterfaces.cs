@@ -27,3 +27,13 @@ public interface ILook
 {
     GameObject LookTarget { get; set; }
 }
+
+public interface ICommandable
+{
+    bool AwaitingCommand { get; set; }
+    NpcCommands RecievedCommand { get; set; }
+    Vector3? MoveCommandTarget { get; set; }
+    GameObject DefendThingCommandTarget { get; set; }
+    GameObject DefendPlaceCommandTarget { get; set; }
+    bool IsRetreating { get; set; }
+}

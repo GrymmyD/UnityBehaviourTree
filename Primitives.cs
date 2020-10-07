@@ -21,7 +21,7 @@ namespace SSG.BehaviourTrees.Primitives
     {
         public Node()
         {
-            //debug = true;
+            debug = true;
         }
         public bool starting = true;
         protected bool debug = false;

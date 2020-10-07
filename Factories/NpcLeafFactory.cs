@@ -8,6 +8,24 @@ using System.Threading.Tasks;
 
 public static class NpcLeafFactory
 {
+    public static Node<T> test<T>() where T: NpcContext, ICommandable, IMoveContext, IHasResourceTarget, ILook, IHasEnemyContext
+    {
+        return new Selector<T>("test",
+            MoveCommand<T>(),
+            new Interruptor<T>("stuff", MoveAndHarvest<T>(), new IsAwaitingCommand<T>())
+            ); ;
+    }
+
+    public static Node<T> MoveCommand<T>() where T : NpcContext, ICommandable, IMoveContext
+    {
+        return new Sequence<T>("MoveCommand",
+            new NpcCommandTruthy<T>(NpcCommands.MOVE),
+            new SetMoveTargetToMoveCommandTarget<T>(),
+            new Move<T>(5f),
+            new CleanMoveTargetState<T>()
+            );
+    }
+
     public static Node<T> Wander<T>() where T : NpcContext, IMoveContext
     {
         return new Sequence<T>("Wander",

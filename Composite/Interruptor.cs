@@ -33,6 +33,8 @@ namespace SSG.BehaviourTrees.Composites
                     {
                         switch (children[i].Behave(state))
                         {
+                            case NodeStatus.SUCCESS:
+                                return NodeStatus.SUCCESS;
                             case NodeStatus.RUNNING:
                                 currentChild = i;
                                 break;
