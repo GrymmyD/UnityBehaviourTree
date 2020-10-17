@@ -12,6 +12,7 @@ public class FriendlyNpcContext : NpcContext, IMoveContext, IHasEnemyContext, IH
     public NpcCommands RecievedCommand { get; set; }
     public Vector3? MoveCommandTarget { get; set; }
     public GameObject DefendThingCommandTarget { get; set; }
-    public GameObject DefendPlaceCommandTarget { get; set; }
+    public Vector3? DefendPlaceCommandTarget { get; set; }
     public bool IsRetreating { get; set; }
+    public bool UpdatedCommand { get; set; }
 }

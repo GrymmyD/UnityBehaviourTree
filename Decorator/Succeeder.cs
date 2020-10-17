@@ -29,4 +29,16 @@ namespace SSG.BehaviourTrees.Decorators
         {
         }
     }
+
+    public class Runner<T> : Node<T> where T : BehaviourState
+    {
+        public override NodeStatus OnBehave(T state)
+        {
+            return NodeStatus.RUNNING;
+        }
+
+        public override void OnReset()
+        {
+        }
+    }
 }
