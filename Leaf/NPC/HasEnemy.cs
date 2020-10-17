@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using SSG.BehaviourTrees.Primitives;
 
-public class HasEnemy : Leaf
+public class HasEnemy <T>: Leaf<T> where T: BehaviourState,IHasEnemyContext
 {
-    public override NodeStatus OnBehave(BehaviourState state)
+    public override NodeStatus OnBehave(T state)
     {
-        Context context = (Context)state;
-
-        if(context.enemy == null)
+        if(state.Enemy == null)
         {
             return NodeStatus.FAILURE;
         }

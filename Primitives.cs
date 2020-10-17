@@ -2,102 +2,112 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Threading;
 
-public enum NodeStatus
+namespace SSG.BehaviourTrees.Primitives
 {
-    FAILURE,
-    SUCCESS,
-    RUNNING
-}
-
-public abstract class BehaviourState
-{
-}
-
-public abstract class Node {
-    public bool starting = true;
-    protected bool debug = false;
-    public int ticks = 0;
-    public static List<string> debugTypeBlacklist = new List<string>() { "Selector", "Sequence", "Repeater", "Inverter", "Succeeder"  };
-    public virtual NodeStatus Behave(BehaviourState state)
+    public enum NodeStatus
     {
-        NodeStatus ret = OnBehave(state);
+        FAILURE,
+        SUCCESS,
+        RUNNING
+    }
 
-        if (debug && !debugTypeBlacklist.Contains(GetType().Name))
+    public abstract class BehaviourState
+    {
+    }
+
+    public abstract class Node<T> where T : BehaviourState
+    {
+        public Node()
         {
-            string result = "Unknown";
-            switch(ret)
-            {
-                case NodeStatus.SUCCESS:
-                    result = "success";
-                    break;
-                case NodeStatus.FAILURE:
-                    result = "failure";
-                    break;
+            debug = true;
+        }
+        public bool starting = true;
+        protected bool debug = false;
+        public int ticks = 0;
+        public static List<string> debugTypeBlacklist = new List<string>() { "Selector`1", "Sequence`1", "Repeater`1", "Inverter`1", "Succeeder`1", "RepeatAlways`1" };
+        public virtual NodeStatus Behave(BehaviourState state)
+        {
+            NodeStatus ret = OnBehave((T)state);
 
-                case NodeStatus.RUNNING:
-                    result = "running";
-                    break;
+            if (debug && !debugTypeBlacklist.Contains(GetType().Name))
+            {
+                string result = "Unknown";
+                switch (ret)
+                {
+                    case NodeStatus.SUCCESS:
+                        result = "success";
+                        break;
+                    case NodeStatus.FAILURE:
+                        result = "failure";
+                        break;
+
+                    case NodeStatus.RUNNING:
+                        result = "running";
+                        break;
+                }
+                Debug.Log("Behaving: " + GetType().Name + " - " + result);
             }
-            Debug.Log("Behaving: " + GetType().Name + " - " + result);
+
+            ticks++;
+            starting = false;
+
+            if (ret != NodeStatus.RUNNING)
+                Reset();
+
+            return ret;
         }
 
-        ticks++;
-        starting = false;
+        public abstract NodeStatus OnBehave(T state);
+        public void Reset()
+        {
+            starting = true;
+            ticks = 0;
+            OnReset();
+        }
 
-        if (ret != NodeStatus.RUNNING)
-            Reset();
-
-        return ret;
+        public abstract void OnReset();
     }
 
-    public abstract NodeStatus OnBehave(BehaviourState state);
-    public void Reset()
+    public abstract class Composite<T> : Node<T> where T : BehaviourState
     {
-        starting = true;
-        ticks = 0;
-        OnReset();
+        protected List<Node<T>> children = new List<Node<T>>();
+        public string compositeName;
+
+        public Composite(string name, params Node<T>[] nodes)
+        {
+            compositeName = name;
+            children.AddRange(nodes);
+        }
+
+        public override NodeStatus Behave(BehaviourState state)
+        {
+            bool shouldLog = debug && ticks == 0;
+            if (shouldLog)
+                Debug.Log("Running behaviour list: " + compositeName);
+
+            NodeStatus ret = base.Behave(state);
+
+            if (debug && ret != NodeStatus.RUNNING)
+                Debug.Log("Behaviour list " + compositeName + " returned: " + ret.ToString());
+
+            return ret;
+        }
     }
 
-    public abstract void OnReset();
-}
-
-public abstract class Composite : Node
-{
-    protected List<Node> children = new List<Node>();
-    public string compositeName;
-
-    public Composite(string name, params Node[] nodes)
+    public abstract class Leaf<T> : Node<T> where T : BehaviourState
     {
-        compositeName = name;
-        children.AddRange(nodes);
     }
 
-    public override NodeStatus Behave(BehaviourState state)
+    public abstract class Decorator<T> : Node<T> where T : BehaviourState
     {
-        bool shouldLog = debug && ticks == 0 ? true : false;
-        if(shouldLog)
-            Debug.Log("Running behaviour list: " + compositeName);
+        protected Node<T> child;
 
-        NodeStatus ret = base.Behave(state);
-
-        if(debug && ret != NodeStatus.RUNNING)
-            Debug.Log("Behaviour list " + compositeName + " returned: " + ret.ToString());
-
-        return ret;
+        public Decorator(Node<T> node)
+        {
+            child = node;
+        }
     }
+
 }
-
-public abstract class Leaf : Node
-{
-}
-
-public abstract class Decorator : Node
-{
-    protected Node child;
-
-    public Decorator(Node node) {
-        child = node;
-    }
-}
-
